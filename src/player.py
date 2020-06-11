@@ -18,18 +18,18 @@ class Player:
         if new_room is not None:
             self.current_room = new_room
         else:
-            print("You shall not pass!!" "\n There's no room in that direction. Try a different way.")
+            print("Ye shall not pass!!" "\n There's no room in that direction. Try a different way.")
 
     # player method to pickup items from a room and add them to player's inventory
     def pickup_item(self, item):
         self.inventory.append(item)
-        print(f"You have picked up a(n) {item.name}.")
+        print(f"Ye have picked up a(n) {item.name}.")
         print(item.description)
 
     # player method to drop items from the player's inventory
     def drop_item(self, item):
         self.inventory.remove(item)
-        print(f"You have dropped a(n) {item.name}.")
+        print(f"Ye have dropped a(n) {item.name}.")
 
     # find item in player inventory to determine if it exists
     def find_item(self, item):
@@ -40,7 +40,7 @@ class Player:
     # display the items in a player's inventory
     def display_inventory(self):
         if len(self.inventory) == 0:  # if the player's inventory is empty, let them know
-            print("You do not have any items in your inventory.")
+            print("Ye do not have any items in yer purse.")
         else:
             print("Current Inventory:")
             for item in self.inventory:
