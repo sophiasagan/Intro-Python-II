@@ -11,8 +11,7 @@ class Player:
         self.items = []
         self.score = 0
 
-    # player method to move the user in a direction
-    # if there is no room in the direction moved, alert the user to try a different way
+    # player move method
     def move(self, direction):
         new_room = getattr(self.current_room, direction)
         if new_room is not None:
@@ -20,32 +19,28 @@ class Player:
         else:
             print("Ye shall not pass!!" "\n There's no room in that direction. Try a different way.")
 
-    # player method to pickup items from a room and add them to player's inventory
+    # player method to pickup items 
     def pickup_item(self, item):
         self.inventory.append(item)
         print(f"Ye have picked up a(n) {item.name}.")
         print(item.description)
 
-    # player method to drop items from the player's inventory
+    # player method to drop items 
     def drop_item(self, item):
         self.inventory.remove(item)
         print(f"Ye have dropped a(n) {item.name}.")
 
-    # find item in player inventory to determine if it exists
+    # find item in player inventory 
     def find_item(self, item):
         for existing_item in self.inventory:
             if item.lower() == existing_item.name.lower():
                 return existing_item
 
-    # display the items in a player's inventory
+    # display inventory
     def display_inventory(self):
-        if len(self.inventory) == 0:  # if the player's inventory is empty, let them know
+        if len(self.inventory) == 0:  
             print("Ye do not have any items in yer purse.")
         else:
             print("Current Inventory:")
             for item in self.inventory:
                 print(f"Name: {item.name}\t Description: {item.description}")
-
-    # def display_score(self, score):
-    #     if s[0] == "score":
-    #         print(f"Your score is currently {item.score}.")

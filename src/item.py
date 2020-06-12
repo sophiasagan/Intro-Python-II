@@ -30,16 +30,7 @@ class LightSource(Item):
     def __init__(self, name, description):
         super().__init__(name, description)
         self.lightsource = True
-
-    def __getattr__(self, attr):
-        return None
-
-    def __str__(self):
-        return super().__str__()
-
-    def __repr__(self):
-        return super().__repr__()
-
+    
     def on_drop(self, player):
         super().on_drop(player)
         print("Damn to the depths, me thinks yer daft walkin' around 'ere blind mate!\n")

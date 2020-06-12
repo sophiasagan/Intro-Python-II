@@ -37,15 +37,16 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-# room['outside'].is_light = True
-# room['foyer'].is_light = True
 
-# Add some items
+# Add light to rooms
+room['outside'].is_light = True
+room['foyer'].is_light = True
 
-t = Treasure("coins", "Shiny coins\n" "It's something but it ain't no treasure...", 20)
+# Add items to rooms
+t = Treasure("coins", "Shiny coins\n" "It's something but it ain't no treasure...", 100)
 room['overlook'].items.append(t)
 
-t = Treasure("silver", "Tarnished silver\n" "Now that's some spending money, maybe enough for a nipperkin of ale or rum...", 200)
+t = Treasure("silver", "Tarnished silver\n" "Now that be some spendin' money, maybe enough for a nipperkin o' ale or rum...", 400)
 room['narrow'].items.append(t)
 
 t = Treasure("gold", "Glinting gold\n" "Looks like ye found what's left of the gold. Ye best be going now....", 1000)
@@ -54,9 +55,6 @@ room['treasure'].items.append(t)
 l = LightSource("lamp", "Old Dusty lamp\n" "Well, it beats being completely in the dark...")
 room['foyer'].items.append(l)
 
-l = LightSource("torch", "bright torch\n Ye can see ....")
-room['overlook'].items.append(l)
-
 i = Item("stick", "Wooden walking staff\n" "I can use this to poke around and keep balance...")
 room['outside'].items.append(i)
 
@@ -64,11 +62,12 @@ room['outside'].items.append(i)
 #
 # Main
 #
-name = input("Tell me yer name and I'll tell ye a tale....: \n")
+name = input("Tell me yer name and I'll tell ye a tale....: \n" "> ")
+
 # Make a new player object that is currently in the 'outside' room.
 player = Player(name, room['outside'])
 
-#print(player.name)
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -83,64 +82,57 @@ player = Player(name, room['outside'])
 
 moves = ['n', 's', 'e', 'w']
 actions = ['i', 'inventory']
-points = ['score', 'booty', 'loot']
+points = ['score']
 
 
 print(f"\n\nWelcome, {player.name}. Will ye find treasure or DEATH?!")
 print("-" * 100)
-print("CONTROLS:")
+print("Game Controls:")
 print(
     "Move using [n] north, [s] south, [e] east, and [w] west.")
 print(
-    "Pickup items using [get ItemName], drop items using [drop ItemName], get score using [score] or quit [q]")
+    "Pickup items using [get ItemName], drop items using [drop ItemName], get score using [score], get inventory using [i] or quit [q]")
 print("-" * 100)
 
 
 while True:
+    
     # light sources:
-    # light_sources = [item for item in player.items + player.current_room.items
-    #                  if isinstance(item, LightSource) and item.lightsource]
+    light_sources = [item for item in player.inventory
+                     if isinstance(item, LightSource) and item.lightsource]
 
-    # is_light = player.current_room.is_light or len(light_sources) > 0
+    is_light = player.current_room.is_light or len(light_sources) > 0
 
-    # if is_light:
-    #     # Print the room name
-    #     print("\n{}\n".format(player.current_room.name))
+    if is_light:
+        print("\n\nThere's light in this room")
 
-    #     # Print the room description
-    #     for line in textwrap.wrap(player.current_room.description):
-    #         print(line)
+    else:
+        print("\nIt's pitch dark!\n")
 
-    #     # Print any items found in the room
-    #     # if len(player.current_room.items) > 0:
-    #     #     print("\nYe see:\n")
-    #     #     for i in player.current_room.items:
-    #     #         print("     " + str(i))
-    # else:
-    #     print("\nIt's very dark!\n")
-
+        
+    #print current room and description
     print(f"\n{player.name}, ye entered:  " + player.current_room.name)
     for line in textwrap.wrap(player.current_room.description):
         print(line)
 
-    # if there are any available items in the room, display them to the player
+    # display available items in the room
     for item in player.current_room.items:
         print(f"\n\nLook here las, ye found a(n) {item.name}.\n\nBlimey, don'tcha just stare at it... pick it up!")
 
+    # player input
     print("\n\n"'Which direction will ye travel?\n')
     player_input = input("> ")
 
-    if player_input == 'q':  # quit the game if the user inputs q
+    if player_input == 'q':  # quit the game 
         exit()
-    elif player_input in moves:  # if the user selects a direction to move, use our move method
+    elif player_input in moves:  # move method
         player.move(f'{player_input}_to')
-    elif player_input in actions:  # if the user opens their inventory, use our display inventory method
+    elif player_input in actions:  #  inventory method
         player.display_inventory()
-    elif player_input in points:
-        print(f'Yer booty is currently worth {player.score} shillings.') # if user wants to see accumulated score
-    elif "get" in player_input or "take" in player_input:
-        # if user inputs "get" or "take", determine if they've entered in
-        # a valid item that exists in the room, and use our pickup method
+    elif player_input in points: # accumulated score from treasure
+        print(f'Yer loot is currently worth {player.score} shillings.') 
+    elif "get" in player_input:
+        # pickup method
         print("Putting item in purse...")
         item.on_take(player)
         words = player_input.split()
@@ -154,12 +146,12 @@ while True:
             if found_item:
                 player.pickup_item(found_item)
                 player.current_room.remove_item(found_item)
+    
         else:
-            print("What are ye trying t' pickup?") # the user did not input an item, or it didn't exist
+            print("What are ye trying t' pickup?") # no input or does not exist
 
     elif "drop" in player_input:
-        # if the user inputs "drop", determine if they've entered in a
-        # valid item that exists in their inventory, and use our drop method
+        # drop method
         print("Digging through purse...")
         item.on_drop(player)
         words = player_input.split()
@@ -172,4 +164,4 @@ while True:
                 player.current_room.add_item(found_item)
                 player.drop_item(found_item)
         else:
-            print("What do ye want t' leggo?") # the user did not input an item, or it didn't exist
+            print("What do ye want t' leggo?") # no input or does not exist
